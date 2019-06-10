@@ -42,8 +42,7 @@
   (lambda (a lat)
     (cond
       ((null? lat) #f)
-      (else (or (eq? (car lat) a)
-                (member? a (cdr lat)))))))
+      (else (or (eq? (car lat) a) (member? a (cdr lat)))))))
 
 ; The First Commandment (preliminary)
 ; Always ask null? as the first question in expressing any function.
