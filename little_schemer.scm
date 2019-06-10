@@ -2,6 +2,7 @@
 
 ; -----------
 ; Chapter One
+; -----------
 
 ; all atoms are S-expressions
 
@@ -25,6 +26,7 @@
 
 ; -----------
 ; Chapter Two
+; -----------
 
 (define lat?
   (lambda (l)
@@ -53,6 +55,7 @@
 
 ; -------------
 ; Chapter Three
+; -------------
 
 (define rember
   (lambda (a lat)
@@ -132,3 +135,45 @@
       ((null? lat) '())
       ((eq? (car lat) old) (cons new (multisubst new old (cdr lat))))
       (else (cons (car lat) (multisubst new old (cdr lat)))))))
+
+
+
+; ------------
+; Chapter Four
+; ------------
+
+
+
+; ------------
+; Chapter Five
+; ------------
+
+
+
+; -----------
+; Chapter Six
+; -----------
+
+
+
+; -------------
+; Chapter Seven
+; -------------
+
+
+
+; -------------
+; Chapter Eight
+; -------------
+
+
+
+; ------------
+; Chapter Nine
+; ------------
+
+
+
+; -----------
+; Chapter Ten
+; -----------
