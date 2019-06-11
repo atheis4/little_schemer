@@ -13,9 +13,9 @@
                [mid (ceiling (/ len 2))]
                [f (lambda (xs n)
                     (cond
-                      ((eq? n 0) (cons xs '()))
+                      ((eq? n 0) '())
                       (else (cons (car xs) (f (cdr xs) (- n 1))))))])
-        (f xs mid))))
+        (cons (f xs mid) (cons (list-tail xs mid) '())))))
 
 
 (define test '(1 2))
@@ -25,4 +25,12 @@
 (div-list test2)
 
 (div-half test)
-(div-half '(1 2 3 4 5 6))
+(define split (div-half '(6 3 9 1 0 2)))
+
+(define (helper xxs)
+  (if (null? xxs)
+  '()
+  (cons (div-half (car xxs)) (helper (cdr xxs)))))
+
+(helper split)
+  
