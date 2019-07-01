@@ -148,6 +148,10 @@
 ; Chapter Five
 ; ------------
 
+(define rember*
+  (lambda (a l)
+    
+
 
 
 ; -----------
