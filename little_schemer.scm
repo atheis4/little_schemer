@@ -6,18 +6,23 @@
 
 ; all atoms are S-expressions
 
+
 ; The Law of cdr
 ; The primitive cdr is defined only for non-empty lists. The cdr of any non-empty list is always another list.
+
 
 ; The Law of cons
 ; The primitive cons takes two arguments. The second argument to cons must be a list. The result is a list.
 
+
 ; The Law of null?
 ; The primitive null? is defined only for lists.
+
 
 (define atom?
   (lambda (x)
     (and (not (pair? x)) (not (null? x)))))
+
 
 ; The Law of eq?
 ; The primitive eq? takes two arguments. Each must be a non-numerica atom.
@@ -35,10 +40,12 @@
       ((atom? (car l)) (lat? (cdr l)))
       (else #f))))
 
+
 ; Note
 ; (cond ...) asks questions
 ; (lambda ...) creates a function
 ; (define ...) gives it a name
+
 
 (define member?
   (lambda (a lat)
@@ -46,9 +53,9 @@
       ((null? lat) #f)
       (else (or (eq? (car lat) a) (member? a (cdr lat)))))))
 
+
 ; The First Commandment (preliminary)
 ; Always ask null? as the first question in expressing any function.
-
 ; else is a question whose value is always true.
 
 
@@ -64,8 +71,10 @@
       ((eq? (car lat) a) (cdr lat))
       (else (cons (car lat) (rember a (cdr lat)))))))
 
+
 ; The Second Commandment
 ; Use cons to build lists.
+
 
 (define firsts
   (lambda (l)
@@ -73,8 +82,10 @@
       ((null? l) '())
       (else (cons (caar l) (firsts (cdr l)))))))
 
+
 ; The Third Commandment
 ; When building a list, describe the first typical element, and then cons it onto the natural recursion.
+
 
 (define insertR
   (lambda (new old lat)
@@ -125,9 +136,11 @@
       ((eq? (car lat) old) (cons new (cons (car lat) (multiinsertL new old (cdr lat)))))
       (else (cons (car lat) (multiinsertL new old (cdr lat)))))))
 
+
 ; The Fourth Commandment
 ; Always change at least one argument while recurring. It must be changed to be closer to termination.
 ; The changing arguments must be tested in the termination condition: when using cdr, test termination with null?
+
 
 (define multisubst
   (lambda (new old lat)
@@ -174,10 +187,12 @@
       ((zero? m) 0)
       (else (+ n (ox n (sub1 m)))))))
 
+
 ; The Fifth Commandment
 ; When building a value with +, always use 0 for the value of the terminating line, for adding 0 does not change the value of an addition.
 ; When building a value with x, always use 1 for the value of the terminating line, for multiplying by 1 does not change the value of a mutliplication.
 ; When building a value with cons, always consider '() for the value of the teriminating line.
+
 
 (define tup+
   (lambda (tup1 tup2)
@@ -291,8 +306,81 @@
 
 (define rember*
   (lambda (a l)
-    
+    (cond
+      ((null? l) '())
+      ((atom? (car l))
+       (cond
+         ((eq? (car l) a) (rember* a (cdr l)))
+         (else (cons (car l) (rember* a (cdr l))))))
+      (else (cons (rember* a (car l)) (rember* a (cdr l)))))))
 
+(define insertR*
+  (lambda (new old l)
+    (cond
+      ((null? l) '())
+      ((atom? (car l))
+       (cond
+         ((eq? (car l) old) (cons (cons old new) (insertR* new old (cdr l))))
+         (else (cons (car l) (insertR* new old (cdr l))))))
+      (else (cons (insertR* new old (car l)) (insertR* new old (cdr l)))))))
+
+
+; The First Commandment (final version)
+; When recurring on a list of atoms, lat, ask two questions about it: (null? lat) and else.
+; When recurring on a number, n, ask two questions about it: (zero? n) and else.
+; When recurring on a list of S-expressions, l, ask three questions about it: (null? l), (atom? (car l)), and else.
+
+
+; The Fourth Commandment (final version)
+; Always change at least one argument while recurring.
+; When recurring on a list of atoms, lat, use (cdr lat).
+; When recurring on a number, n, use (sub1 n).
+; And when recurring on a list of S-expressions, l, use (car l) and (cdr l) if neither (null? l) nor (atom? (car l)) are true.
+
+; It must be changed to be closer to termination. The cahnging argument must be tested in the termination condition:
+; when using cdr, test termination with null? and
+; when using sub1, test termination with zero?
+
+
+(define occur*
+  (lambda (a l)
+    (cond
+      ((null? l) 0)
+      ((atom? (car l))
+       (cond
+         ((eq? (car l) a) (add1 (occur* a (cdr l))))
+         ((occur* a (cdr l)))))
+      (else (o+ (occur* a (car l)) (occur* a (cdr l)))))))
+
+(define subst*
+  (lambda (new old l)
+    (cond
+      ((null? l) '())
+      ((atom? (car l))
+       (cond
+         ((eq? (car l) old) (cons new (subst* new old (cdr l))))
+         (else (cons (car l) (subst* new old (cdr l))))))
+      (else (cons (subst* new old (car l)) (subst* new old (cdr l)))))))
+
+(define insertL*
+  (lambda (new old l)
+    (cond
+      ((null? l) '())
+      ((atom? (car l))
+       (cond
+         ((eq? (car l) old) (cons new (cons (car l) (insertL* new old (cdr l)))))
+         (else (cons (car l) (insertL* new old (cdr l))))))
+      (else (cons (insertL* new old (car l)) (insertL* new old (cdr l)))))))
+
+(define member*
+  (lambda (a l)
+    (cond
+      ((null? l) #f)
+      ((atom? (car l))
+       (or (eq? (car l) a) (member* a (cdr l))))
+      (else (or (member* a (car l)) (member* a (cdr l)))))))
+
+(define t '('(banana) '(split '('('('(banana ice))) '(cream '(banana)) sherbet)) '(banana) '(bread) '(banana brandy)))
 
 
 ; -----------
